@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, Grids, LazFileUtils, LCLIntf, ClipBrd, StdCtrls, Windows, jwatlhelp32, ShellApi;
+  ComCtrls, ExtCtrls, Grids, LazFileUtils, LCLIntf, ClipBrd, StdCtrls, Windows, jwatlhelp32, ShellApi, Process;
 
 type
 
@@ -14,37 +14,60 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
+    Button10: TButton;
+    Button11: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
+    Button7: TButton;
+    Button8: TButton;
+    Button9: TButton;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
     CheckGroup1: TCheckGroup;
     GroupBox1: TGroupBox;
+    GroupBox10: TGroupBox;
+    GroupBox11: TGroupBox;
     GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
     GroupBox5: TGroupBox;
+    GroupBox6: TGroupBox;
+    GroupBox7: TGroupBox;
+    GroupBox8: TGroupBox;
+    GroupBox9: TGroupBox;
     Image1: TImage;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Memo1: TMemo;
     PageControl1: TPageControl;
     StringGrid1: TStringGrid;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
+    Timer1: TTimer;
+    Timer2: TTimer;
+    ToggleBox1: TToggleBox;
+    ToggleBox2: TToggleBox;
     TrayIcon1: TTrayIcon;
+    procedure Button10Click(Sender: TObject);
+    procedure Button11Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure CheckBox2Change(Sender: TObject);
     procedure CheckBox3Change(Sender: TObject);
@@ -53,7 +76,12 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure Label1Click(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
     procedure StringGrid1DblClick(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+    procedure Timer2Timer(Sender: TObject);
+    procedure ToggleBox1Change(Sender: TObject);
+    procedure ToggleBox2Change(Sender: TObject);
     procedure TrayIcon1Click(Sender: TObject);
     procedure UpdateProcessTable;
     procedure UpdateGUI;
@@ -62,6 +90,10 @@ type
     function IsAdmin: Boolean;
     function UserInGroup(const group: Dword): Boolean;
     function RunAsAdmin(const filename: String): Boolean;
+    procedure FailSuccessLabel(const Value: Boolean);
+    procedure BlockingEvents;
+    function ExecuteCommand(Command: String; Sanitizing: Boolean = True): Boolean;
+    function SanitizeInput(const Input: String): String;
 
   private
 
@@ -75,6 +107,7 @@ var
   PE: TProcessEntry32;  //ProcessEntry Variable
   MasterPID: Integer;  //Current PID Variable
   MasterTitle: String;  //Current Title Variable
+  BlockCount: Integer = 0;  //Counting Variable for Blocking
 
   const License = 'Advanced Process Blocker is licensed under the' + LineEnding +
                   'GNU General Public License v3.0.' + LineEnding +
@@ -90,6 +123,75 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+function TForm1.SanitizeInput(const Input: String): String;  //Sanitize Input
+begin
+
+  Result := StringReplace(Input, '&', '', [rfReplaceAll]);  //Remove Symbols
+  Result := StringReplace(Result, ';', '', [rfReplaceAll]);  //Remove Symbols
+  Result := StringReplace(Result, '$', '', [rfReplaceAll]);  //Remove Symbols
+  Result := StringReplace(Result, '!', '', [rfReplaceAll]);  //Remove Symbols
+  Result := StringReplace(Result, '(', '', [rfReplaceAll]);  //Remove Symbols
+  Result := StringReplace(Result, ')', '', [rfReplaceAll]);  //Remove Symbols
+  Result := StringReplace(Result, '´', '', [rfReplaceAll]);  //Remove Symbols
+  Result := StringReplace(Result, '`', '', [rfReplaceAll]);  //Remove Symbols
+  Result := StringReplace(Result, char(#39), '', [rfReplaceAll]);  //Remove Symbols
+
+end;
+
+function TForm1.ExecuteCommand(Command: String; Sanitizing: Boolean = True): Boolean;  //Custom Command execution procedure through cmd
+begin
+
+  Result := False;  //Initialize Result
+
+  if Sanitizing = True then begin  //Check for Sanitizing Flag
+
+    Command := SanitizeInput(Command);  //Sanitize Command
+
+  end;
+
+  with TProcess.Create(nil) do begin  //Create a new Process to run Cmd
+
+    Executable := 'cmd.exe';  //Set cmd.exe as executable
+    Parameters.Add('/c');  //the "/c" Parameter allows us to append a new command
+    Parameters.Add(Command);  //Add the real command to be executed as parameter
+
+    Options := [poUsePipes, poWaitOnExit, poNoConsole];  //Do set the options to get the result and wait for it and also hide the console
+
+    Execute;  //Execute the Process
+
+    if ExitStatus = 0 then Result := True;  //Set Status to Success (used for the Label)
+
+    Free;  //Free the Process
+
+   end;
+
+end;
+
+procedure TForm1.BlockingEvents;  //Execute Events when Process was blocked
+begin
+
+end;
+
+procedure Tform1.FailSuccessLabel(const Value: Boolean);  //Check for Fail or Success of Termination
+begin
+
+  if Value = True then begin  //Value Check
+
+    Label4.Caption := 'SUCCESS';  //Set Caption
+    Label4.Font.Color := clLime;  //Set Color
+
+  end
+  else begin
+
+    Label4.Caption := 'FAIL';  //Set Caption
+    Label4.Font.Color := clred;  //Set Color
+
+  end;
+
+  Timer1.Enabled := True;  //Enable Label Reset Timer
+
+end;
 
 function TForm1.RunAsAdmin(const filename: String): Boolean;  //Run as Process as Administrator
 var
@@ -134,7 +236,7 @@ begin
 
      if not CheckTokenMembership(0, pSid, IsMember) then  //Check for Membership
 
-        Result := False;  //Set Result
+        Result := False  //Set Result
 
      else
 
@@ -274,10 +376,24 @@ begin
 
 end;
 
+procedure TForm1.Button10Click(Sender: TObject);  //Kill Process by PID with taskkill
+begin
+
+  FailSuccessLabel(ExecuteCommand('taskkill /F /PID ' + IntToStr(MasterPID) + ' /T'));  //Kill Task by PID with taskkill
+
+end;
+
+procedure TForm1.Button11Click(Sender: TObject);  //Kill Process by Name with taskkill
+begin
+
+  FailSuccessLabel(ExecuteCommand('taskkill /F /IM ' + MasterTitle + ' /T', NOT ToggleBox2.Checked));  //Kill Task by Name with taskkill
+
+end;
+
 procedure TForm1.Button2Click(Sender: TObject);
 begin
 
-  KillProcessByPID(MasterPID);  //Kill the choosen Process by its PID
+  FailSuccessLabel(KillProcessByPID(MasterPID));  //Kill the choosen Process by its PID
 
 end;
 
@@ -298,15 +414,44 @@ end;
 procedure TForm1.Button5Click(Sender: TObject);  //Hide Application
 begin
 
-  TrayIcon1.Visible := False;  //Hide Tray Icon
-  Form1.Visible := False;  //Hide Form
+  if MessageDlg('Advanced Process Blocker', 'This will completely hide this Application.' + LineEnding +
+                'You will have to use the Task Manager to' + LineEnding +
+                'terminate Advanced Process Blocker later!' + LineEnding +
+                'Do you really want to continue?', mtWarning, [mbYes, mbNo], '') = mrYes then begin
+
+    TrayIcon1.Visible := False;  //Hide Tray Icon
+    Form1.Visible := False;  //Hide Form
+
+  end;
 
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
 
-  KillProcessByName(MasterTitle);  //Kill the choosen Process by its Name
+  FailSuccessLabel(KillProcessByName(MasterTitle));  //Kill the choosen Process by its Name
+
+end;
+
+procedure TForm1.Button7Click(Sender: TObject);  //Add Selected Entry
+begin
+
+  Memo1.Lines.Add(MasterTitle);  //Add Master Title to Memo
+
+end;
+
+procedure TForm1.Button8Click(Sender: TObject);  //Clear Button
+begin
+
+  Memo1.Clear;  //Clear Blocking Memo List
+
+end;
+
+procedure TForm1.Button9Click(Sender: TObject);  //Reset Blocking Counter
+begin
+
+  BlockCount := 0;  //Set Counter to 0
+  Label5.Caption := IntToStr(BlockCount) + ' BLOCKED';  //Update Label
 
 end;
 
@@ -367,6 +512,11 @@ begin
 
       Close;  //Terminate Current Application
 
+    end
+    else begin
+
+      CheckBox4.Checked := False;  //Unset Checkbox if Set Admin Privileges was unsuccessful
+
     end;
 
   end;
@@ -405,6 +555,11 @@ begin
 
 end;
 
+procedure TForm1.PageControl1Change(Sender: TObject);
+begin
+
+end;
+
 procedure TForm1.StringGrid1DblClick(Sender: TObject);
 begin
 
@@ -430,6 +585,69 @@ begin
       MessageDlg(Application.Title, 'Please select an entry first!', mtError, [mbOK], 0);  //Error Message if Selection was invalid (Should theoreticaly not be needed)
 
     end;
+
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);  //Fail and Success Label Reset Timer
+begin
+
+  Label4.Caption := '';  //Resetting Label Caption
+  Timer1.Enabled := False;  //Disable Timer
+
+end;
+
+procedure TForm1.Timer2Timer(Sender: TObject);  //Blocking Timer
+var
+  i: Integer;  //Temporary Counter Variable
+begin
+
+  for i := 0 to Memo1.Lines.Count - 1 do begin  //Iterate through Memo Entries
+
+    if KillProcessByName(Memo1.Lines[i]) then begin  //Try to kill Process
+
+      BlockingEvents;  //Execute BlockingEvents Procedure
+      BlockCount += 1;  //Increase Counter by 1
+      Label5.Caption := IntToStr(BlockCount) + ' BLOCKED';  //Update Label
+
+    end;
+
+  end;
+
+end;
+
+procedure TForm1.ToggleBox1Change(Sender: TObject);  //Enable Disable Blocking
+begin
+
+  if ToggleBox1.Checked = True then begin  //Check for Click
+
+    ToggleBox1.Caption := 'Disable Blocking';  //Set Caption
+
+  end
+  else begin
+
+    ToggleBox1.Caption := 'Enable Blocking';  //Set Caption
+
+  end;
+
+  Timer2.Enabled := ToggleBox1.Checked;  //Activate or Deativate Timer
+
+end;
+
+procedure TForm1.ToggleBox2Change(Sender: TObject);  //Enable Disable Input Sanitizing
+begin
+
+  if ToggleBox2.Checked = True then begin  //Check for Click
+
+    ToggleBox2.Caption := 'Enable taskkill Input Sanitizing';  //Set Caption
+
+    ShowMessage('You have disabled Input Sanitizing. Now Symbols like &,$,;,!,´,`,(,) or ' + char(#39) + ' will not be edited out of the Process Names. Please be aware that strange Process Names could be used for Command Injection. Please use the terminate by PID option instead!');  //Show Message
+
+  end
+  else begin
+
+    ToggleBox2.Caption := 'Disable taskkill Input Sanitizing';  //Set Caption
+
+  end;
 
 end;
 

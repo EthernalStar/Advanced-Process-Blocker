@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 88
+  Left = 71
   Height = 625
-  Top = 285
+  Top = 231
   Width = 500
   VertScrollBar.Smooth = True
   VertScrollBar.Tracking = True
@@ -203,6 +203,7 @@ object Form1: TForm1
     ActivePage = TabSheet1
     TabIndex = 0
     TabOrder = 2
+    OnChange = PageControl1Change
     object TabSheet1: TTabSheet
       Caption = 'Options'
       ClientHeight = 273
@@ -210,17 +211,17 @@ object Form1: TForm1
       Enabled = False
       object GroupBox1: TGroupBox
         Left = 10
-        Height = 137
+        Height = 158
         Top = 10
         Width = 230
         Caption = 'Process Termination'
-        ClientHeight = 117
+        ClientHeight = 138
         ClientWidth = 226
         TabOrder = 0
         object Button2: TButton
           Left = 10
           Height = 25
-          Top = 10
+          Top = 8
           Width = 206
           Caption = 'Kill Process by PID'
           OnClick = Button2Click
@@ -235,6 +236,24 @@ object Form1: TForm1
           OnClick = Button6Click
           TabOrder = 1
         end
+        object Button10: TButton
+          Left = 10
+          Height = 25
+          Top = 72
+          Width = 206
+          Caption = 'Kill Process by PID with taskkill'
+          OnClick = Button10Click
+          TabOrder = 2
+        end
+        object Button11: TButton
+          Left = 10
+          Height = 25
+          Top = 104
+          Width = 206
+          Caption = 'Kill Process by Name with taskkill'
+          OnClick = Button11Click
+          TabOrder = 3
+        end
       end
       object GroupBox3: TGroupBox
         Left = 256
@@ -242,31 +261,127 @@ object Form1: TForm1
         Top = 10
         Width = 222
         Caption = 'Process Blocking'
+        ClientHeight = 234
+        ClientWidth = 218
         TabOrder = 1
+        object Memo1: TMemo
+          Left = 10
+          Height = 150
+          Top = 10
+          Width = 198
+          ScrollBars = ssVertical
+          TabOrder = 0
+        end
+        object Button7: TButton
+          Left = 10
+          Height = 25
+          Top = 168
+          Width = 118
+          Caption = 'Add Selected Entry'
+          OnClick = Button7Click
+          TabOrder = 1
+        end
+        object Button8: TButton
+          Left = 133
+          Height = 25
+          Top = 168
+          Width = 75
+          Caption = 'Clear All'
+          OnClick = Button8Click
+          TabOrder = 2
+        end
+        object ToggleBox1: TToggleBox
+          Left = 10
+          Height = 25
+          Top = 200
+          Width = 198
+          Caption = 'Enable Blocking'
+          OnChange = ToggleBox1Change
+          TabOrder = 3
+        end
       end
       object GroupBox5: TGroupBox
         Left = 10
-        Height = 105
-        Top = 159
+        Height = 88
+        Top = 176
         Width = 230
         Caption = 'Other Options'
-        ClientHeight = 85
+        ClientHeight = 68
         ClientWidth = 226
         TabOrder = 2
-        object Button5: TButton
+        object Button9: TButton
           Left = 10
           Height = 25
-          Top = 8
+          Top = 3
           Width = 206
-          Caption = 'Hide this Window'
-          OnClick = Button5Click
+          Caption = 'Reset Blocking Counter'
+          OnClick = Button9Click
           TabOrder = 0
+        end
+        object ToggleBox2: TToggleBox
+          Left = 10
+          Height = 25
+          Top = 34
+          Width = 206
+          Caption = 'Disable taskkill Input Sanitizing'
+          OnChange = ToggleBox2Change
+          TabOrder = 1
         end
       end
     end
     object TabSheet2: TTabSheet
       Caption = 'Events'
+      ClientHeight = 273
+      ClientWidth = 493
       Enabled = False
+      object GroupBox6: TGroupBox
+        Left = 8
+        Height = 80
+        Top = 8
+        Width = 233
+        Caption = 'Execute Command'
+        TabOrder = 0
+      end
+      object GroupBox7: TGroupBox
+        Left = 250
+        Height = 80
+        Top = 8
+        Width = 233
+        Caption = 'Open URL'
+        TabOrder = 1
+      end
+      object GroupBox8: TGroupBox
+        Left = 8
+        Height = 80
+        Top = 96
+        Width = 233
+        Caption = 'Use Password to unblock'
+        TabOrder = 2
+      end
+      object GroupBox9: TGroupBox
+        Left = 8
+        Height = 80
+        Top = 184
+        Width = 233
+        Caption = 'Show Message when blocked'
+        TabOrder = 3
+      end
+      object GroupBox10: TGroupBox
+        Left = 250
+        Height = 80
+        Top = 96
+        Width = 233
+        Caption = 'Watch for running Process'
+        TabOrder = 4
+      end
+      object GroupBox11: TGroupBox
+        Left = 250
+        Height = 80
+        Top = 184
+        Width = 233
+        Caption = 'Start other Executable'
+        TabOrder = 5
+      end
     end
     object TabSheet3: TTabSheet
       Caption = 'Info'
@@ -274,17 +389,17 @@ object Form1: TForm1
       ClientWidth = 493
       object GroupBox2: TGroupBox
         Left = 10
-        Height = 105
+        Height = 94
         Top = 10
         Width = 235
         Caption = 'Software'
-        ClientHeight = 85
+        ClientHeight = 74
         ClientWidth = 231
         TabOrder = 0
         object Image1: TImage
           Left = 10
           Height = 64
-          Top = 8
+          Top = 4
           Width = 64
           Picture.Data = {
             1754506F727461626C654E6574776F726B477261706869633B01000089504E47
@@ -304,7 +419,7 @@ object Form1: TForm1
         object Label2: TLabel
           Left = 80
           Height = 60
-          Top = 10
+          Top = 6
           Width = 138
           Caption = 'Advanced Process Blocker'#13#10'Version 1.00'#13#10'© EthernalStar'#13#10'NZSoft@Protonmail.com'
           ParentColor = False
@@ -330,8 +445,8 @@ object Form1: TForm1
       end
       object CheckGroup1: TCheckGroup
         Left = 10
-        Height = 105
-        Top = 128
+        Height = 129
+        Top = 104
         Width = 235
         AutoFill = True
         Caption = 'Settings'
@@ -343,7 +458,7 @@ object Form1: TForm1
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 85
+        ClientHeight = 109
         ClientWidth = 231
         TabOrder = 2
         object CheckBox1: TCheckBox
@@ -375,12 +490,21 @@ object Form1: TForm1
         end
         object CheckBox4: TCheckBox
           Left = 6
-          Height = 19
+          Height = 18
           Top = 60
           Width = 219
           Caption = 'Set Administrative Privileges'
           OnChange = CheckBox4Change
           TabOrder = 3
+        end
+        object Button5: TButton
+          Left = 6
+          Height = 25
+          Top = 78
+          Width = 219
+          Caption = 'Hide Window and Tray Icon'
+          OnClick = Button5Click
+          TabOrder = 4
         end
       end
       object Button3: TButton
@@ -418,6 +542,34 @@ object Form1: TForm1
     ParentColor = False
     ParentFont = False
     OnClick = Label1Click
+  end
+  object Label4: TLabel
+    Left = 160
+    Height = 1
+    Top = 0
+    Width = 1
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -16
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label5: TLabel
+    Left = 328
+    Height = 21
+    Top = 0
+    Width = 84
+    Alignment = taRightJustify
+    Caption = '0 BLOCKED'
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -16
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
   end
   object TrayIcon1: TTrayIcon
     BalloonHint = 'Advanced Process Blocker'
@@ -562,5 +714,19 @@ object Form1: TForm1
     Visible = True
     OnClick = TrayIcon1Click
     Top = 592
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1500
+    OnTimer = Timer1Timer
+    Left = 32
+    Top = 592
+  end
+  object Timer2: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = Timer2Timer
+    Left = 79
+    Top = 594
   end
 end
