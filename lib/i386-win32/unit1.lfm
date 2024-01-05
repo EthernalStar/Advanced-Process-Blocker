@@ -340,7 +340,37 @@ object Form1: TForm1
         Top = 8
         Width = 233
         Caption = 'Execute Command'
+        ClientHeight = 60
+        ClientWidth = 229
+        Enabled = False
         TabOrder = 0
+        object Edit5: TEdit
+          Left = 8
+          Height = 23
+          Top = 8
+          Width = 208
+          Alignment = taCenter
+          TabOrder = 0
+          TextHint = 'cmd.exe Commandline'
+        end
+        object CheckBox13: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 35
+          Width = 125
+          Caption = 'Limit to 1 Execution'
+          OnClick = Button13Click
+          TabOrder = 1
+        end
+        object Button13: TButton
+          Left = 136
+          Height = 19
+          Top = 35
+          Width = 80
+          Caption = 'Reset Limit'
+          OnClick = Button13Click
+          TabOrder = 2
+        end
       end
       object GroupBox7: TGroupBox
         Left = 250
@@ -348,7 +378,37 @@ object Form1: TForm1
         Top = 8
         Width = 233
         Caption = 'Open URL'
+        ClientHeight = 60
+        ClientWidth = 229
+        Enabled = False
         TabOrder = 1
+        object Edit1: TEdit
+          Left = 8
+          Height = 23
+          Top = 8
+          Width = 212
+          Alignment = taCenter
+          TabOrder = 0
+          TextHint = 'www.example.com'
+        end
+        object CheckBox12: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 35
+          Width = 125
+          Caption = 'Limit to 1 Execution'
+          OnClick = Button12Click
+          TabOrder = 1
+        end
+        object Button12: TButton
+          Left = 140
+          Height = 19
+          Top = 35
+          Width = 80
+          Caption = 'Reset Limit'
+          OnClick = Button12Click
+          TabOrder = 2
+        end
       end
       object GroupBox8: TGroupBox
         Left = 8
@@ -356,7 +416,21 @@ object Form1: TForm1
         Top = 96
         Width = 233
         Caption = 'Use Password to unblock'
+        ClientHeight = 60
+        ClientWidth = 229
+        Enabled = False
         TabOrder = 2
+        object Edit6: TEdit
+          Left = 8
+          Height = 23
+          Top = 8
+          Width = 208
+          Alignment = taCenter
+          EchoMode = emPassword
+          PasswordChar = '*'
+          TabOrder = 0
+          TextHint = 'Password'
+        end
       end
       object GroupBox9: TGroupBox
         Left = 8
@@ -364,7 +438,28 @@ object Form1: TForm1
         Top = 184
         Width = 233
         Caption = 'Show Message when blocked'
+        ClientHeight = 60
+        ClientWidth = 229
+        Enabled = False
         TabOrder = 3
+        object Edit3: TEdit
+          Left = 8
+          Height = 23
+          Top = 4
+          Width = 208
+          Alignment = taCenter
+          TabOrder = 0
+          TextHint = 'Title'
+        end
+        object Edit4: TEdit
+          Left = 8
+          Height = 23
+          Top = 28
+          Width = 208
+          Alignment = taCenter
+          TabOrder = 1
+          TextHint = 'Message'
+        end
       end
       object GroupBox10: TGroupBox
         Left = 250
@@ -372,7 +467,27 @@ object Form1: TForm1
         Top = 96
         Width = 233
         Caption = 'Watch for running Process'
+        ClientHeight = 60
+        ClientWidth = 229
+        Enabled = False
         TabOrder = 4
+        object Edit2: TEdit
+          Left = 8
+          Height = 23
+          Top = 8
+          Width = 212
+          Alignment = taCenter
+          TabOrder = 0
+          TextHint = 'example.exe'
+        end
+        object CheckBox11: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 35
+          Width = 188
+          Caption = 'Display Message when Blocking'
+          TabOrder = 1
+        end
       end
       object GroupBox11: TGroupBox
         Left = 250
@@ -380,7 +495,62 @@ object Form1: TForm1
         Top = 184
         Width = 233
         Caption = 'Start other Executable'
+        Enabled = False
         TabOrder = 5
+      end
+      object CheckBox5: TCheckBox
+        Left = 180
+        Height = 19
+        Top = 6
+        Width = 58
+        Caption = 'On/Off'
+        OnChange = CheckBox5Change
+        TabOrder = 6
+      end
+      object CheckBox6: TCheckBox
+        Left = 421
+        Height = 19
+        Top = 6
+        Width = 58
+        Caption = 'On/Off'
+        OnChange = CheckBox6Change
+        TabOrder = 7
+      end
+      object CheckBox7: TCheckBox
+        Left = 180
+        Height = 19
+        Top = 94
+        Width = 58
+        Caption = 'On/Off'
+        OnChange = CheckBox7Change
+        TabOrder = 8
+      end
+      object CheckBox8: TCheckBox
+        Left = 421
+        Height = 19
+        Top = 94
+        Width = 58
+        Caption = 'On/Off'
+        OnChange = CheckBox8Change
+        TabOrder = 9
+      end
+      object CheckBox9: TCheckBox
+        Left = 180
+        Height = 19
+        Top = 182
+        Width = 58
+        Caption = 'On/Off'
+        OnChange = CheckBox9Change
+        TabOrder = 10
+      end
+      object CheckBox10: TCheckBox
+        Left = 421
+        Height = 19
+        Top = 182
+        Width = 58
+        Caption = 'On/Off'
+        OnChange = CheckBox10Change
+        TabOrder = 11
       end
     end
     object TabSheet3: TTabSheet

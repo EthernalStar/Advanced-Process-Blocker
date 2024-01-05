@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, Grids, LazFileUtils, LCLIntf, ClipBrd, StdCtrls, Windows, jwatlhelp32, ShellApi, Process;
+  ComCtrls, ExtCtrls, Grids, LazFileUtils, LCLIntf, ClipBrd, StdCtrls, Windows, jwatlhelp32, ShellApi, Process, Unit2;
 
 type
 
@@ -16,6 +16,8 @@ type
     Button1: TButton;
     Button10: TButton;
     Button11: TButton;
+    Button12: TButton;
+    Button13: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -25,10 +27,25 @@ type
     Button8: TButton;
     Button9: TButton;
     CheckBox1: TCheckBox;
+    CheckBox10: TCheckBox;
+    CheckBox11: TCheckBox;
+    CheckBox12: TCheckBox;
+    CheckBox13: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
+    CheckBox5: TCheckBox;
+    CheckBox6: TCheckBox;
+    CheckBox7: TCheckBox;
+    CheckBox8: TCheckBox;
+    CheckBox9: TCheckBox;
     CheckGroup1: TCheckGroup;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    Edit4: TEdit;
+    Edit5: TEdit;
+    Edit6: TEdit;
     GroupBox1: TGroupBox;
     GroupBox10: TGroupBox;
     GroupBox11: TGroupBox;
@@ -59,6 +76,8 @@ type
     TrayIcon1: TTrayIcon;
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
+    procedure Button12Click(Sender: TObject);
+    procedure Button13Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -68,10 +87,16 @@ type
     procedure Button7Click(Sender: TObject);
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
+    procedure CheckBox10Change(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure CheckBox2Change(Sender: TObject);
     procedure CheckBox3Change(Sender: TObject);
     procedure CheckBox4Change(Sender: TObject);
+    procedure CheckBox5Change(Sender: TObject);
+    procedure CheckBox6Change(Sender: TObject);
+    procedure CheckBox7Change(Sender: TObject);
+    procedure CheckBox8Change(Sender: TObject);
+    procedure CheckBox9Change(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
@@ -91,9 +116,10 @@ type
     function UserInGroup(const group: Dword): Boolean;
     function RunAsAdmin(const filename: String): Boolean;
     procedure FailSuccessLabel(const Value: Boolean);
-    procedure BlockingEvents;
+    procedure BlockingEvents(PName: String = '');
     function ExecuteCommand(Command: String; Sanitizing: Boolean = True): Boolean;
     function SanitizeInput(const Input: String): String;
+    function ProcessExists(PName: String): Boolean;
 
   private
 
@@ -108,6 +134,8 @@ var
   MasterPID: Integer;  //Current PID Variable
   MasterTitle: String;  //Current Title Variable
   BlockCount: Integer = 0;  //Counting Variable for Blocking
+  Limit: Boolean = False;  //URL Open Limit
+  LimitCmd: Boolean = False;  //CMD Open Limit
 
   const License = 'Advanced Process Blocker is licensed under the' + LineEnding +
                   'GNU General Public License v3.0.' + LineEnding +
@@ -123,6 +151,35 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+function TForm1.ProcessExists(PName: String): Boolean;  //Check if given Process is running
+var
+  ContinueLoop: Boolean;  //Loop Variable
+  FSnapshotHandle: THandle;  //Snapshot Handle
+  FProcessEntry32: TProcessEntry32;  //Process Snapshot
+begin
+
+  Result := False;  //Initialize Result
+
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);  //Create Snapshot
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);  //Set Size
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);  //Get Loop Variable
+
+  while Integer(ContinueLoop) <> 0 do begin  //While Loop
+
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = UpperCase(PName)) or (UpperCase(FProcessEntry32.szExeFile) = UpperCase(PName))) then begin  //Check for Name
+
+      Result := True;  //Found Process
+
+    end;
+
+    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);  //See if next to continue
+
+  end;
+
+  CloseHandle(FSnapshotHandle);  //Close Handle
+
+end;
 
 function TForm1.SanitizeInput(const Input: String): String;  //Sanitize Input
 begin
@@ -168,8 +225,51 @@ begin
 
 end;
 
-procedure TForm1.BlockingEvents;  //Execute Events when Process was blocked
+procedure TForm1.BlockingEvents(PName: String = '');  //Execute Events when Process was blocked
 begin
+
+  if CheckBox9.Checked then begin  //Check for Message
+
+    MessageDlg(Edit3.Text, Edit4.Text, mtInformation, [mbOK, mbNo], '');  //Display MessageBox
+
+  end;
+
+  if CheckBox5.Checked then begin  //Check for Command
+
+    if NOT ( CheckBox13.Checked ) OR ( ( CheckBox13.Checked ) AND LimitCmd = False ) then begin  //Check for Limit
+
+      ExecuteCommand(Edit5.Text, False);  //Execute Command
+      LimitCmd := True;  //Set Limit
+
+    end;
+
+  end;
+
+  if ( CheckBox8.Checked ) AND ( CheckBox11.Checked ) then begin  //Check for Logic
+
+    ShowMessage('The Execution of the File "' + PName + '" was blocked because "' + Edit2.Text + '" is currently running!');  //Display Message
+
+  end;
+
+  if CheckBox6.Checked then begin  //Open URL Option Check
+
+    if NOT ( CheckBox12.Checked ) OR ( ( CheckBox12.Checked ) AND Limit = False ) then begin  //Check for Limit
+
+      OpenUrl(Edit1.Text);  //Open URL in standart Browser
+      Limit := True;  //Set Limit
+
+    end;
+
+  end;
+
+  if CheckBox7.Checked then begin  //Password Option Check
+
+    Form2.Label1.Caption := 'Execution of "' + PName + '" was blocked.' + LineEnding +
+                            'If you want to disable blocking please' + LineEnding +
+                            'input the correct Password below.';  //Change Label
+    Form2.Visible := True;  //Show Password Input
+
+  end;
 
 end;
 
@@ -390,6 +490,20 @@ begin
 
 end;
 
+procedure TForm1.Button12Click(Sender: TObject);  //Reset Limit
+begin
+
+  Limit := False;  //Set Limit False
+
+end;
+
+procedure TForm1.Button13Click(Sender: TObject);  //Reset Cmd Limit
+begin
+
+  LimitCmd := False;  //Set Limit False
+
+end;
+
 procedure TForm1.Button2Click(Sender: TObject);
 begin
 
@@ -426,7 +540,7 @@ begin
 
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
+procedure TForm1.Button6Click(Sender: TObject);  //Kill the Process by Name
 begin
 
   FailSuccessLabel(KillProcessByName(MasterTitle));  //Kill the choosen Process by its Name
@@ -452,6 +566,13 @@ begin
 
   BlockCount := 0;  //Set Counter to 0
   Label5.Caption := IntToStr(BlockCount) + ' BLOCKED';  //Update Label
+
+end;
+
+procedure TForm1.CheckBox10Change(Sender: TObject);  //Event Enable Logic
+begin
+
+  GroupBox11.Enabled := CheckBox10.Checked;  //Enable Event
 
 end;
 
@@ -520,6 +641,41 @@ begin
     end;
 
   end;
+
+end;
+
+procedure TForm1.CheckBox5Change(Sender: TObject);  //Event Enable Logic
+begin
+
+  GroupBox6.Enabled := CheckBox5.Checked;  //Enable Event
+
+end;
+
+procedure TForm1.CheckBox6Change(Sender: TObject);  //Event Enable Logic
+begin
+
+  GroupBox7.Enabled := CheckBox6.Checked;  //Enable Event
+
+end;
+
+procedure TForm1.CheckBox7Change(Sender: TObject);  //Event Enable Logic
+begin
+
+  GroupBox8.Enabled := CheckBox7.Checked;  //Enable Event
+
+end;
+
+procedure TForm1.CheckBox8Change(Sender: TObject);  //Event Enable Logic
+begin
+
+  GroupBox10.Enabled := CheckBox8.Checked;  //Enable Event
+
+end;
+
+procedure TForm1.CheckBox9Change(Sender: TObject);  //Event Enable Logic
+begin
+
+  GroupBox9.Enabled := CheckBox9.Checked;  //Enable Event
 
 end;
 
@@ -603,11 +759,15 @@ begin
 
   for i := 0 to Memo1.Lines.Count - 1 do begin  //Iterate through Memo Entries
 
-    if KillProcessByName(Memo1.Lines[i]) then begin  //Try to kill Process
+    if ( NOT CheckBox8.Checked ) OR ( ( CheckBox8.Checked ) AND ProcessExists( Edit2.Text ) ) then begin
 
-      BlockingEvents;  //Execute BlockingEvents Procedure
-      BlockCount += 1;  //Increase Counter by 1
-      Label5.Caption := IntToStr(BlockCount) + ' BLOCKED';  //Update Label
+      if KillProcessByName(Memo1.Lines[i]) then begin  //Try to kill Process
+
+        BlockingEvents(Memo1.Lines[i]);  //Execute BlockingEvents Procedure
+        BlockCount += 1;  //Increase Counter by 1
+        Label5.Caption := IntToStr(BlockCount) + ' BLOCKED';  //Update Label
+
+      end;
 
     end;
 
