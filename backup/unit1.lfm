@@ -200,8 +200,8 @@ object Form1: TForm1
     Height = 301
     Top = 0
     Width = 501
-    ActivePage = TabSheet1
-    TabIndex = 0
+    ActivePage = TabSheet2
+    TabIndex = 1
     TabOrder = 2
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
@@ -430,6 +430,40 @@ object Form1: TForm1
           PasswordChar = '*'
           TabOrder = 0
           TextHint = 'Password'
+        end
+        object Button14: TButton
+          Left = 8
+          Height = 19
+          Top = 35
+          Width = 128
+          Caption = 'Lock down Application'
+          OnClick = Button14Click
+          TabOrder = 1
+        end
+        object SpinEdit1: TSpinEdit
+          Left = 142
+          Height = 19
+          Top = 35
+          Width = 42
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = -8
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          MaxValue = 99
+          ParentFont = False
+          TabOrder = 2
+        end
+        object Label6: TLabel
+          Left = 193
+          Height = 15
+          Top = 39
+          Width = 23
+          Caption = 'Tries'
+          Font.CharSet = ANSI_CHARSET
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          ParentColor = False
+          ParentFont = False
         end
       end
       object GroupBox9: TGroupBox

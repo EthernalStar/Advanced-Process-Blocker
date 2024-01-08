@@ -46,17 +46,45 @@ end;
 procedure TForm2.Button1Click(Sender: TObject);  //Unblock Button
 begin
 
-  if Edit1.Text = Form1.Edit6.Text then begin  //Check Password
+  if (Edit1.Text = Form1.Edit6.Text) AND NOT (Unit1.Tries = 0) then begin  //Check Password
 
     Form1.ToggleBox1.Checked := False;  //Unset Blocking 
-    ShowMessage('The Password was input correctly. All Processes are now unblocked.');  //Display Message 
+    ShowMessage('Your Password was correct. All Processes are now unblocked.');  //Display Message
     Form2.Visible := False;  //Hide Password Input
+    Edit1.Clear;  //Clear Password Field
+
+    if Lockdown = True then begin  //Check for Lockdown Mode
+
+      Form1.TrayIcon1.Visible := True;  //Enable TrayIcon
+      Form1.Enabled := True;  //Enable Form
+      Form1.PageControl1.Enabled := True;  //Eable Control
+      Form1.Button1.Enabled := True;  //Eable Control
+      Form1.StringGrid1.Enabled := True;  //Eable Control
+      ShowMessage('Lockdown Mode has been disabled!');  //Show Message
+
+    end;
+
+  end
+  else if NOT (Unit1.Tries = 0) then begin  //Check remaining Tries
+
+    MessageDlg('Advanced Process Blocker', 'Your Password is incorrect.', mtError, [mbOK], '');   //Display Error Message
+    Form2.Visible := False;  //Hide Password Input 
+    Edit1.Clear;  //Clear Password Field
+
+    if Unit1.Tries > 0 then begin  //Check Tries
+
+      Unit1.Tries := Unit1.Tries - 1;  //Remove 1 Password Try
+
+      ShowMessage('You have ' + IntToStr(Form1.SpinEdit1.Value - Unit1.Tries) + ' Tries left!');  //Display Message
+
+    end;
 
   end
   else begin
 
-    MessageDlg('Advanced Process Blocker', 'Your Password is incorrect.', mtError, [mbOK], '');   //Display Error Message
+    MessageDlg('Advanced Process Blocker', 'No more Tries left!', mtError, [mbOK], '');   //Display Error Message
     Form2.Visible := False;  //Hide Password Input
+    Edit1.Clear;  //Clear Password Field
 
   end;
 

@@ -5,8 +5,9 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, Grids, LazFileUtils, LCLIntf, ClipBrd, StdCtrls, Windows, jwatlhelp32, ShellApi, Process, Unit2;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
+  Grids, LazFileUtils, LCLIntf, ClipBrd, StdCtrls, Spin, Windows, jwatlhelp32,
+  ShellApi, Process, Unit2;
 
 type
 
@@ -18,6 +19,7 @@ type
     Button11: TButton;
     Button12: TButton;
     Button13: TButton;
+    Button14: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -63,8 +65,10 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
+    Label6: TLabel;
     Memo1: TMemo;
     PageControl1: TPageControl;
+    SpinEdit1: TSpinEdit;
     StringGrid1: TStringGrid;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
@@ -78,6 +82,7 @@ type
     procedure Button11Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
     procedure Button13Click(Sender: TObject);
+    procedure Button14Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -136,6 +141,8 @@ var
   BlockCount: Integer = 0;  //Counting Variable for Blocking
   Limit: Boolean = False;  //URL Open Limit
   LimitCmd: Boolean = False;  //CMD Open Limit
+  LockDown: Boolean = False;  //Application LockDown Check
+  Tries: Integer = 0;  //Password Tries
 
   const License = 'Advanced Process Blocker is licensed under the' + LineEnding +
                   'GNU General Public License v3.0.' + LineEnding +
@@ -504,6 +511,36 @@ begin
 
 end;
 
+procedure TForm1.Button14Click(Sender: TObject);  //Lock down Application
+begin
+
+  if Edit6.Text = '' then begin  //Check for empty Password
+
+    ShowMessage('Please input a Password first!');  //Display Message
+
+  end
+  else begin
+
+    if MessageDlg('Advanced Process Blocker', 'Blocking will be enabled and this Application will enter Lockdown Mode.' + LineEnding +
+                'You will have to input the correct Password' + LineEnding +
+                'to unblock your Processes!' + LineEnding +
+                'Do you really want to continue?', mtWarning, [mbYes, mbNo], '') = mrYes then begin  //Check for Choice
+
+      ToggleBox1.Checked := True;  //Enable Blocking
+      TrayIcon1.Visible := False;  //Hide Tray Icon
+      Form1.Visible := False;  //Hide Form
+      LockDown := True;  //Set Lockdown
+      Form1.Enabled := False;  //Disable Form
+      Form1.PageControl1.Enabled := False;  //Disable Form 
+      Form1.Button1.Enabled := False;  //Disable Control
+      Form1.StringGrid1.Enabled := False;  //Disable Control
+
+    end;
+
+  end;
+
+end;
+
 procedure TForm1.Button2Click(Sender: TObject);
 begin
 
@@ -691,6 +728,8 @@ begin
 
   CanClose := NOT CheckBox3.Checked;  //Check for Self Setting
 
+  CanClose := NOT LockDown;  //Overwrite CanClose on Lockdown Mode
+
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);  //Form Creation
@@ -786,6 +825,14 @@ begin
   else begin
 
     ToggleBox1.Caption := 'Enable Blocking';  //Set Caption
+
+  end;
+
+  Tries := SpinEdit1.Value;  //Set Password Tries
+
+  if SpinEdit1.Value = 0 then begin  //Check for 0 in SpinEdit
+
+    Tries := -1;  //Set unlimited Tries
 
   end;
 
