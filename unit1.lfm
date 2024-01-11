@@ -208,7 +208,6 @@ object Form1: TForm1
       Caption = 'Options'
       ClientHeight = 273
       ClientWidth = 493
-      Enabled = False
       object GroupBox1: TGroupBox
         Left = 10
         Height = 158
@@ -217,6 +216,7 @@ object Form1: TForm1
         Caption = 'Process Termination'
         ClientHeight = 138
         ClientWidth = 226
+        Enabled = False
         TabOrder = 0
         object Button2: TButton
           Left = 10
@@ -278,6 +278,7 @@ object Form1: TForm1
           Top = 168
           Width = 118
           Caption = 'Add Selected Entry'
+          Enabled = False
           OnClick = Button7Click
           TabOrder = 1
         end
@@ -333,7 +334,6 @@ object Form1: TForm1
       Caption = 'Events'
       ClientHeight = 273
       ClientWidth = 493
-      Enabled = False
       object GroupBox6: TGroupBox
         Left = 8
         Height = 80
@@ -529,8 +529,40 @@ object Form1: TForm1
         Top = 184
         Width = 233
         Caption = 'Start other Executable'
+        ClientHeight = 60
+        ClientWidth = 229
         Enabled = False
         TabOrder = 5
+        object Button15: TButton
+          Left = 8
+          Height = 25
+          Top = 3
+          Width = 148
+          Caption = 'Choose Executable'
+          OnClick = Button15Click
+          TabOrder = 0
+        end
+        object Button16: TButton
+          Left = 160
+          Height = 25
+          Top = 3
+          Width = 60
+          Caption = 'Reset'
+          OnClick = Button16Click
+          TabOrder = 1
+        end
+        object Label7: TLabel
+          Left = 8
+          Height = 15
+          Top = 36
+          Width = 212
+          AutoSize = False
+          Caption = 'Current Executable: '
+          Font.Height = 16
+          ParentColor = False
+          ParentFont = False
+          OptimalFill = True
+        end
       end
       object CheckBox5: TCheckBox
         Left = 180
@@ -625,7 +657,7 @@ object Form1: TForm1
           Height = 60
           Top = 6
           Width = 138
-          Caption = 'Advanced Process Blocker'#13#10'Version 1.00'#13#10'© EthernalStar'#13#10'NZSoft@Protonmail.com'
+          Caption = 'Advanced Process Blocker'#13#10'Version 1.0.0'#13#10'© EthernalStar'#13#10'NZSoft@Protonmail.com'
           ParentColor = False
         end
       end
@@ -932,5 +964,12 @@ object Form1: TForm1
     OnTimer = Timer2Timer
     Left = 79
     Top = 594
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Choose Executable'
+    DefaultExt = '.exe'
+    Filter = 'Windows Executable|*.exe|Any File|*.*'
+    Left = 120
+    Top = 584
   end
 end

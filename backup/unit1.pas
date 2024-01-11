@@ -20,6 +20,8 @@ type
     Button12: TButton;
     Button13: TButton;
     Button14: TButton;
+    Button15: TButton;
+    Button16: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -66,7 +68,9 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    Label7: TLabel;
     Memo1: TMemo;
+    OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     SpinEdit1: TSpinEdit;
     StringGrid1: TStringGrid;
@@ -83,6 +87,8 @@ type
     procedure Button12Click(Sender: TObject);
     procedure Button13Click(Sender: TObject);
     procedure Button14Click(Sender: TObject);
+    procedure Button15Click(Sender: TObject);
+    procedure Button16Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -125,6 +131,7 @@ type
     function ExecuteCommand(Command: String; Sanitizing: Boolean = True): Boolean;
     function SanitizeInput(const Input: String): String;
     function ProcessExists(PName: String): Boolean;
+    procedure ExecuteExternalApp(const ExePath: string);
 
   private
 
@@ -143,6 +150,7 @@ var
   LimitCmd: Boolean = False;  //CMD Open Limit
   LockDown: Boolean = False;  //Application LockDown Check
   Tries: Integer = 0;  //Password Tries
+  ExternalExecutable: String = '';  //Path to extra Executable
 
   const License = 'Advanced Process Blocker is licensed under the' + LineEnding +
                   'GNU General Public License v3.0.' + LineEnding +
@@ -158,6 +166,19 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.ExecuteExternalApp(const ExePath: string);
+var
+  ExternalApp: TProcess;  //Tprocess Variable to start the Executable
+begin
+
+  ExternalApp := TProcess.Create(nil);  //Create TProcess
+  ExternalApp.Executable := ExePath;  //Set Exe Path
+  ExternalApp.Execute;  //Execute App
+
+  FreeAndNil(ExternalApp)
+
+end;
 
 function TForm1.ProcessExists(PName: String): Boolean;  //Check if given Process is running
 var
@@ -266,6 +287,12 @@ begin
       Limit := True;  //Set Limit
 
     end;
+
+  end;
+
+  if ( CheckBox10.Checked ) AND NOT (ExternalExecutable = '') then begin  //Start other Executable
+
+    ExecuteExternalApp(ExternalExecutable);  //Start Executable
 
   end;
 
@@ -541,6 +568,28 @@ begin
 
 end;
 
+procedure TForm1.Button15Click(Sender: TObject);  //Choose Executable
+begin
+
+  if OpenDialog1.Execute = True then begin  //Check for Dialog Option
+
+    ExternalExecutable := OpenDialog1.FileName;  //Set Path of Executable
+    Label7.Caption := 'Current Executable: ' + ExtractFileName(ExternalExecutable);  //Set Label caption as Information
+
+  end;
+
+end;
+
+procedure TForm1.Button16Click(Sender: TObject);
+begin
+
+  ExternalExecutable := '';  //Reset Executable Path
+  Label7.Caption := 'Current Executable: ';  //Set Label caption as Information
+
+  ShowMessage('Executable Path was reset.');  //ShowMessage
+
+end;
+
 procedure TForm1.Button2Click(Sender: TObject);
 begin
 
@@ -610,6 +659,12 @@ procedure TForm1.CheckBox10Change(Sender: TObject);  //Event Enable Logic
 begin
 
   GroupBox11.Enabled := CheckBox10.Checked;  //Enable Event
+
+  If CheckBox10.Checked = False then begin  //Check for deactivated option
+
+    Button16.Click;  //Click Button as Shortcut for Reseting Executable Path
+
+  end;
 
 end;
 
@@ -726,9 +781,7 @@ end;
 procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);  //Check for Close Prevention
 begin
 
-  CanClose := NOT CheckBox3.Checked;  //Check for Self Setting
-
-  CanClose := NOT LockDown;  //Overwrite CanClose on Lockdown Mode
+  CanClose := ( NOT CheckBox3.Checked ) AND ( NOT LockDown );  //Check for Self Setting and Lockdown Mode
 
 end;
 
@@ -760,8 +813,8 @@ begin
 
   if (StringGrid1.Row >= 1) AND (StringGrid1.Cells[0,StringGrid1.Row].Length > 0) then begin  //Only select the current PID if there is something to select in the first column
 
-    TabSheet1.Enabled := True;  //Enable TabSheet after the user selects a PID
-    TabSheet2.Enabled := True;  //Enable TabSheet after the user selects a PID
+    GroupBox1.Enabled := True;  //Enable TabSheet after the user selects a PID
+    Button7.Enabled := True;  //Enable Add Button after Selection
 
     MasterPID := StrToInt(StringGrid1.Cells[0,StringGrid1.Row]);  //Update the value for the current MasterPID
     MasterTitle := StringGrid1.Cells[1,StringGrid1.Row];  //Update the value for the current MasterTitle

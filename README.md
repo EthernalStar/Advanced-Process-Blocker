@@ -30,7 +30,7 @@ Now just open the .lpr file in your Lazarus Installation and you should be able 
 
 ## Changelog
 
-Version 1.00: Initial Release  
+Version 1.0.0: Initial Release.  
   
 
 ## License

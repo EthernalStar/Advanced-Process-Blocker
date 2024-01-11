@@ -75,7 +75,16 @@ begin
 
       Unit1.Tries := Unit1.Tries - 1;  //Remove 1 Password Try
 
-      ShowMessage('You have ' + IntToStr(Form1.SpinEdit1.Value - Unit1.Tries) + ' Tries left!');  //Display Message
+      if Unit1.Tries <> 1 then begin  //Spelling Check for Tries and Try
+
+        ShowMessage('You have ' + IntToStr(Unit1.Tries) + ' Tries left!');  //Display Message
+
+      end
+      else begin
+
+        ShowMessage('You have ' + IntToStr(Unit1.Tries) + ' Try left!');  //Display Message
+
+      end;
 
     end;
 

@@ -60,6 +60,7 @@ begin
       Form1.PageControl1.Enabled := True;  //Eable Control
       Form1.Button1.Enabled := True;  //Eable Control
       Form1.StringGrid1.Enabled := True;  //Eable Control
+      LockDown := False;  //Disable Lockdown Mode
       ShowMessage('Lockdown Mode has been disabled!');  //Show Message
 
     end;
