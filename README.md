@@ -25,13 +25,45 @@ The number of currently blocked processes will also be displayed at the top of t
   
 ![Options Tab Screenshot](https://github.com/EthernalStar/Advanced-Process-Blocker/blob/main/Images/Advanced%20Process%20Blocker%2001.png?raw=true)
 
+After double clicking an Entry in the PID List below you can choose to simply terminate the choosen process with two different Methodes and Arguments.  
+You will see visual feedback if the Process Termination succeeded or failed.  
+**Kill Process by PID** uses the internal Windows API to kill the corresponding Process by its PID.  
+**Kill Process by Name** does the same as the above but instead for **ALL** Processes with the same Executable Name.  
+**Kill Process by PID with takkill** and **Kill Process by Name with taskkill** do the same as the other buttons but utilize the taskkill command instead.  
+
+In the Panel for Process Blocking you will find diffrerent options to do just this.  
+**Add Selected Entry** simply copies the current Executable Filename to a new Line in the Edit Field. You could also simply write the names in the Field.  
+This Feature is currently only for Executable Names and not PIDs.  
+**Clear All** clears the Edit Field and **Enable Blocking** Toggles the Blocking of the Processes on and off.  
+Each time a Application was blocked the Counter on the Top of the Application will increase.  
+
+Other Options include the Feature to **Reset the Blocking Counter** or to **Disable taskkill Sanitizing** (Explained when using this Feature).  
+
+
 ### Events Tab
   
-![Events Tab Screenshot](https://github.com/EthernalStar/Advanced-Process-Blocker/blob/main/Images/Advanced%20Process%20Blocker%2002.png?raw=true)
-  
+![Events Tab Screenshot](https://github.com/EthernalStar/Advanced-Process-Blocker/blob/main/Images/Advanced%20Process%20Blocker%2002.png?raw=true)  
+
+Here you can set various Events wich will be executed when an Application was blocked (not when it was manually terminated).  
+Events:  
+**Execute Command**: Executes the written Command (Executes cmd.exe /c <COMMANDLINE>). Can be limited to only 1 Execution. Limit can be reset at runtime.  
+**Open URL**: Opens the set URL in your default Browser. Can be limited to only 1 Execution. Limit can be reset at runtime.  
+**Use Password to unblock**: Opens a Dialog that requests the User to input the previously set Password to disable Blocking. Max Tries can be set and activating Lockdown Mode diables manual deactivation of the Application without Password or Taskmanager (wich could also be blocked by inputting taskmgr.exe).  
+**Watch for running Process**: **Disables Blocking** unless an Application wich bears the set Executable Name is running. Can also display a Message (Looks like this: "Application A.exe could not be started because Application B.exe is currently running"). This also works when the blocking Process ist started later.  
+**Show Message when blocked**: Shows a Message with custom Title after blocking the Process.  
+**Start other Executable**: Starts Annother Executable instead of the one the user wanted to run and displays its Name.  
+
+
 ### Info Tab
   
-![Info Tab Screenshot](https://github.com/EthernalStar/Advanced-Process-Blocker/blob/main/Images/Advanced%20Process%20Blocker%2003.png?raw=true)
+![Info Tab Screenshot](https://github.com/EthernalStar/Advanced-Process-Blocker/blob/main/Images/Advanced%20Process%20Blocker%2003.png?raw=true)  
+
+The Info Tab hold some self Settings for the Application itself.  
+**Disable Topmost Status** and **Disable Tray Icon** are self-explanatory.  
+**Prevent Application Termination** sets the internal CanClose Boolean from the OnCloseQuery Event to False and also hides the Close Button. This prevents you from closing the Application by accident or by pressing Alt + F4. It will **NOT** prevent closing through Taskmanager. Its also used by the Lockdown Mode.  
+**Set Administrative Privileges** grants the Application Administrator Rights if it dos not already have them.  
+**Hide Window and Tray Icon** does exactly what it says it does.  
+  
 
 ## Use Cases
   
