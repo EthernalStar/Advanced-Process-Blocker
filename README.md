@@ -69,10 +69,10 @@ The Info Tab hold some self Settings for the Application itself.
   
 Ill admit that there are only a few real sittuations where this Application is useful but it helped me a lot when experimenting with stuff:  
   
-Stopping applications wich are out of control or restarting themselves when closes by CMD or Task-Manager (playing with Form.OnClose is not allways a good Idea...).  
+Stopping Applications wich are out of control or restarting themselves when closes by CMD or Task-Manager.  
 Preventing yourself from beeing distracted by specific Apps.  
 Locking Applications with a temporary Password.  
-Redirection the start of an Executable to a URL or Shell Comand (By executing cmd.exe).  
+Redirecting the start of an Executable to a URL or Shell Comand (By executing cmd.exe).  
   
 
 ## Building
