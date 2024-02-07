@@ -111,7 +111,7 @@ These Issues will not be adressed as this overturns the innitial scope of the Pr
   * Added Copy Indicator for displayed Handle. 
   * Added closing confirmation Dialog if blocking is enabled.
   * Improved Scrolling with the Process List.
-  * WIP: Replaced Clear Password with SHA-512 Hash.
+  * Encoded Clear Password with Base64. More is out of Scope.
   * Rewritten Information Section to be more usable.
   * Minor visual fixes.
 

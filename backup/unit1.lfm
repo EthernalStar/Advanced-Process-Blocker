@@ -885,7 +885,7 @@ object Form1: TForm1
         Height = 25
         Top = 240
         Width = 230
-        Caption = 'Export Process List as CSV File'
+        Caption = 'Export Process List to CSV File'
         OnClick = Button17Click
         TabOrder = 3
       end

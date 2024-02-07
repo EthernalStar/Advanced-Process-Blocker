@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
   Grids, LazFileUtils, LCLIntf, ClipBrd, StdCtrls, Spin, Windows, jwatlhelp32,
-  ShellApi, Process, Unit2, IniFiles;
+  ShellApi, Process, Unit2, IniFiles, base64;
 
 type
 
@@ -187,7 +187,7 @@ var
                     ' * Added Copy Indicator for displayed Handle.' + LineEnding + 
                     ' * Added closing confirmation Dialog if blocking is enabled.' + LineEnding +
                     ' * Improved Scrolling with the Process List.' + LineEnding +
-                    ' * WIP: Replaced Clear Password with SHA-512 Hash.' + LineEnding +
+                    ' * Replaced Clear Password with Base64. More is out of Scope.' + LineEnding +
                     ' * Rewritten Information Section to be more usable.' + LineEnding +
                     ' * Minor visual fixes.';  //The String used for Displaying the latest Changelog
 
@@ -904,7 +904,7 @@ begin
 
         Settings.WriteString('Settings', 'Command Line', '"' + Edit5.Text + '"');
         Settings.WriteString('Settings', 'URL', '"' + Edit1.Text + '"');
-        Settings.WriteString('Settings', 'Password', '"' + Edit6.Text + '"');
+        Settings.WriteString('Settings', 'Password', '"' + Base64.EncodeStringBase64(Edit6.Text) + '"');
         Settings.WriteString('Settings', 'Title', '"' + Edit3.Text + '"');
         Settings.WriteString('Settings', 'Message', '"' + Edit4.Text + '"');
         Settings.WriteString('Settings', 'Running Process', '"' + Edit2.Text + '"');
@@ -977,7 +977,7 @@ begin
 
       Edit5.Text := Settings.ReadString('Settings', 'Command Line', '');
       Edit1.Text := Settings.ReadString('Settings', 'URL', '');
-      Edit6.Text := Settings.ReadString('Settings', 'Password', '');
+      Edit6.Text := Base64.DecodeStringBase64(Settings.ReadString('Settings', 'Password', ''));
       Edit2.Text := Settings.ReadString('Settings', 'Running Process', '');
       Edit3.Text := Settings.ReadString('Settings', 'Title', '');
       Edit4.Text := Settings.ReadString('Settings', 'Message', '');
