@@ -14,6 +14,12 @@
       </XPManifest>
       <Icon Value="0"/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <MajorVersionNr Value="1"/>
+      <RevisionNr Value="1"/>
+      <StringTable Comments="A Tool to Block or Terminate Processes by their Name or PID. " CompanyName="EthernalStar" FileDescription="A Tool to Block or Terminate Processes by their Name or PID. " InternalName="Advanced Process Blocker" LegalCopyright="EthernalStar" LegalTrademarks="EthernalStar" OriginalFilename="Advanced Process Blocker" ProductName="Advanced Process Blocker" ProductVersion="1.0.1.0"/>
+    </VersionInfo>
     <BuildModes>
       <Item Name="Default" Default="True"/>
     </BuildModes>

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
   Grids, LazFileUtils, LCLIntf, ClipBrd, StdCtrls, Spin, Windows, jwatlhelp32,
-  ShellApi, Process, Unit2;
+  ShellApi, Process, Unit2, IniFiles;
 
 type
 
@@ -22,6 +22,7 @@ type
     Button14: TButton;
     Button15: TButton;
     Button16: TButton;
+    Button17: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -35,6 +36,7 @@ type
     CheckBox11: TCheckBox;
     CheckBox12: TCheckBox;
     CheckBox13: TCheckBox;
+    CheckBox14: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
@@ -50,10 +52,10 @@ type
     Edit4: TEdit;
     Edit5: TEdit;
     Edit6: TEdit;
+    Edit7: TEdit;
     GroupBox1: TGroupBox;
     GroupBox10: TGroupBox;
     GroupBox11: TGroupBox;
-    GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
     GroupBox5: TGroupBox;
@@ -62,6 +64,8 @@ type
     GroupBox8: TGroupBox;
     GroupBox9: TGroupBox;
     Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -69,9 +73,11 @@ type
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
+    Label8: TLabel;
     Memo1: TMemo;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
+    SaveDialog1: TSaveDialog;
     SpinEdit1: TSpinEdit;
     StringGrid1: TStringGrid;
     TabSheet1: TTabSheet;
@@ -79,6 +85,8 @@ type
     TabSheet3: TTabSheet;
     Timer1: TTimer;
     Timer2: TTimer;
+    Timer3: TTimer;
+    Timer4: TTimer;
     ToggleBox1: TToggleBox;
     ToggleBox2: TToggleBox;
     TrayIcon1: TTrayIcon;
@@ -89,6 +97,7 @@ type
     procedure Button14Click(Sender: TObject);
     procedure Button15Click(Sender: TObject);
     procedure Button16Click(Sender: TObject);
+    procedure Button17Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -99,6 +108,7 @@ type
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure CheckBox10Change(Sender: TObject);
+    procedure CheckBox14Change(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure CheckBox2Change(Sender: TObject);
     procedure CheckBox3Change(Sender: TObject);
@@ -108,14 +118,19 @@ type
     procedure CheckBox7Change(Sender: TObject);
     procedure CheckBox8Change(Sender: TObject);
     procedure CheckBox9Change(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure Edit7Change(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
+    procedure Image2Click(Sender: TObject);
+    procedure Image3Click(Sender: TObject);
     procedure Label1Click(Sender: TObject);
+    procedure Label3Click(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure StringGrid1DblClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure Timer2Timer(Sender: TObject);
+    procedure Timer3Timer(Sender: TObject);
+    procedure Timer4Timer(Sender: TObject);
     procedure ToggleBox1Change(Sender: TObject);
     procedure ToggleBox2Change(Sender: TObject);
     procedure TrayIcon1Click(Sender: TObject);
@@ -131,7 +146,9 @@ type
     function ExecuteCommand(Command: String; Sanitizing: Boolean = True): Boolean;
     function SanitizeInput(const Input: String): String;
     function ProcessExists(PName: String): Boolean;
-    procedure ExecuteExternalApp(const ExePath: string);
+    procedure ExecuteExternalApp(const ExePath: string); 
+    procedure CustomLabelMouseEnter(Sender: TObject);
+    procedure CustomLabelMouseLeave(Sender: TObject);
 
   private
 
@@ -151,6 +168,8 @@ var
   LockDown: Boolean = False;  //Application LockDown Check
   Tries: Integer = 0;  //Password Tries
   ExternalExecutable: String = '';  //Path to extra Executable
+  Settings: TIniFile;  //Settings ini File
+  SkipSaving: Boolean = False;  //Settings Saving Force Skip
 
   const License = 'Advanced Process Blocker is licensed under the' + LineEnding +
                   'GNU General Public License v3.0.' + LineEnding +
@@ -159,13 +178,44 @@ var
                   'along with this program.' + LineEnding +
                   'If not, see https://www.gnu.org/licenses/';  //The String used for Displaying the License Information
 
-  const Changelog = 'Version 1.00: Initial Release';  //The String used for Displaying the latest Changelog
+  const Changelog = 'Version 1.0.0:' + LineEnding +
+                    ' * Initial Release.' + LineEnding +
+                    'Version 1.0.1:' + LineEnding +
+                    ' * Added Feature to save Settings.' + LineEnding +
+                    ' * Added Searching Feature for the Process List.' + LineEnding +
+                    ' * Added CSV export of the Process List.' + LineEnding +
+                    ' * Added Copy Indicator for displayed Handle.' + LineEnding + 
+                    ' * Added closing confirmation Dialog if blocking is enabled.' + LineEnding +
+                    ' * Improved Scrolling with the Process List.' + LineEnding +
+                    ' * WIP: Replaced Clear Password with SHA-512 Hash.' + LineEnding +
+                    ' * Rewritten Information Section to be more usable.' + LineEnding +
+                    ' * Minor visual fixes.';  //The String used for Displaying the latest Changelog
 
 implementation
 
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.CustomLabelMouseEnter(Sender: TObject);  //Custom Procedure to underline any Label OnMouseEnter
+var
+  tempLabel: TLabel = nil;  //Temporary Label
+begin
+
+  tempLabel := TLabel(Sender);  //Get Label
+  tempLabel.Font.Style := [fsUnderline];  //Set Style
+
+end;
+
+procedure TForm1.CustomLabelMouseLeave(Sender: TObject);  //Custom Procedure to remove underline from any Label OnMouseLeave
+var
+  tempLabel: TLabel = nil;  //Temporary Label
+begin
+
+  tempLabel := TLabel(Sender);  //Get Label
+  tempLabel.Font.Style := [];  //Unset Style
+
+end;
 
 procedure TForm1.ExecuteExternalApp(const ExePath: string);
 var
@@ -313,7 +363,7 @@ begin
   if Value = True then begin  //Value Check
 
     Label4.Caption := 'SUCCESS';  //Set Caption
-    Label4.Font.Color := clLime;  //Set Color
+    Label4.Font.Color := $0000CE00;  //Set Color
 
   end
   else begin
@@ -590,6 +640,13 @@ begin
 
 end;
 
+procedure TForm1.Button17Click(Sender: TObject);  //Export Process List to CSV File
+begin
+
+  if SaveDialog1.Execute then StringGrid1.SaveToCSVFile(SaveDialog1.FileName);  //Save StringGrid to CSV File after choosing Location
+
+end;
+
 procedure TForm1.Button2Click(Sender: TObject);
 begin
 
@@ -668,6 +725,30 @@ begin
 
 end;
 
+procedure TForm1.CheckBox14Change(Sender: TObject);  //Auto Save/Load Settings Checkbox Change
+begin
+
+  if NOT CheckBox14.Checked then begin  //Check for disabled Saving Settings
+
+    if FileExists(ExtractFilePath(Application.ExeName) + 'Advanced Process Blocker.ini') then begin  //Check if Settings where allready created
+
+      if MessageDlg('Unsetting this Option will delete the Settings File.' + LineEnding + 'Do you want to continue?', mtWarning, [mbYes, mbNo], 0) = mrYes then begin  //Ask if user wnats to delete current settings
+
+        SysUtils.DeleteFile(ExtractFilePath(Application.ExeName) + 'Advanced Process Blocker.ini');  //Delete the Settings File
+
+      end
+      else begin
+
+        CheckBox14.Checked := True;  //Check Checkbox again
+
+      end;
+
+    end;
+
+  end;
+
+end;
+
 procedure TForm1.CheckBox1Change(Sender: TObject);  //Self Settings to switch off Topmost mode
 begin
 
@@ -723,6 +804,7 @@ begin
 
     if RunAsAdmin(Application.ExeName) = True then begin  //Restart as Admin
 
+      SkipSaving := True;  //Skip Saving of settings as the Application is restartet
       Close;  //Terminate Current Application
 
     end
@@ -771,17 +853,96 @@ begin
 
 end;
 
-procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);  //Form Termination
+procedure TForm1.Edit7Change(Sender: TObject);  //Search Process Name Edit Field Change
+var
+  i: Integer = 0;  //Temp counter Variable
+  j: Integer = 0;  //Temp counter Variable
 begin
 
-  TrayIcon1.Visible := False;  //Fix TrayIcon not disappearing sometimes
+  for i := 0 to StringGrid1.RowCount - 1 do  //Outer Loop
+
+    for j := 0 to StringGrid1.ColCount - 1 do  //Inner Loop
+
+      if Pos(UpperCase(Edit7.Text), UpperCase(StringGrid1.Cells[j, i])) > 0 then begin  //Check for String Match between Searched Title and Cell content
+
+        StringGrid1.Row := i;  //Select Row
+        StringGrid1.TopRow := Max(0, i - (StringGrid1.VisibleRowCount div 2));  //Scroll
+
+        Exit;  //Leave after first match
+
+      end;
 
 end;
 
-procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);  //Check for Close Prevention
+procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);  //Check for tasks before closing
 begin
 
   CanClose := ( NOT CheckBox3.Checked ) AND ( NOT LockDown );  //Check for Self Setting and Lockdown Mode
+
+  if CanClose = True then begin  //Check if Application will realy close
+
+    if ( CheckBox14.Checked = True ) AND NOT ( SkipSaving = True ) then begin  //Check for Saving Option and Skip Flag
+
+      Settings := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'Advanced Process Blocker.ini');  //Create Settings File
+
+      try
+
+        Settings.WriteString('Settings', 'Execute Command', BoolToStr(CheckBox5.Checked));
+        Settings.WriteString('Settings', 'Open URL', BoolToStr(CheckBox6.Checked));
+        Settings.WriteString('Settings', 'Use Password to unblock', BoolToStr(CheckBox7.Checked));
+        Settings.WriteString('Settings', 'Show Message when blocked', BoolToStr(CheckBox9.Checked));
+        Settings.WriteString('Settings', 'Watch for running Process', BoolToStr(CheckBox8.Checked));
+        Settings.WriteString('Settings', 'Start other Executable', BoolToStr(CheckBox10.Checked));
+        Settings.WriteString('Settings', 'Disable Topmost Status', BoolToStr(CheckBox1.Checked));
+        Settings.WriteString('Settings', 'Disable Tray Icon', BoolToStr(CheckBox2.Checked));
+        Settings.WriteString('Settings', 'Prevent Application Termination', BoolToStr(CheckBox3.Checked));
+        Settings.WriteString('Settings', 'Set Administrative Privileges', BoolToStr(CheckBox4.Checked));
+        Settings.WriteString('Settings', 'Auto Save/Load Settings', BoolToStr(CheckBox14.Checked));
+        Settings.WriteString('Settings', 'Limit CMD to 1 Execution', BoolToStr(CheckBox13.Checked));
+        Settings.WriteString('Settings', 'Limit URL to 1 Execution', BoolToStr(CheckBox12.Checked));
+        Settings.WriteString('Settings', 'Display Message when Blocking', BoolToStr(CheckBox11.Checked));
+
+        Settings.WriteString('Settings', 'Command Line', '"' + Edit5.Text + '"');
+        Settings.WriteString('Settings', 'URL', '"' + Edit1.Text + '"');
+        Settings.WriteString('Settings', 'Password', '"' + Edit6.Text + '"');
+        Settings.WriteString('Settings', 'Title', '"' + Edit3.Text + '"');
+        Settings.WriteString('Settings', 'Message', '"' + Edit4.Text + '"');
+        Settings.WriteString('Settings', 'Running Process', '"' + Edit2.Text + '"');
+        Settings.WriteString('Settings', 'Other Executable', '"' + ExternalExecutable + '"');
+        Settings.WriteString('Settings', 'Blocklist', '"' + StringReplace(Memo1.Text, #13#10, '?', [rfReplaceAll]) + '"');
+
+        Settings.WriteString('Settings', 'Tries', IntToStr(SpinEdit1.Value));
+
+      finally
+
+        Settings.Free;  //Free Settings File
+
+      end;
+
+    end;
+
+    if ToggleBox1.Checked then begin  //Check for blocking Status
+
+      if MessageDlg('The Process blocking is still enabled. ' + LineEnding + 'Do you really want to close the Application?' + LineEnding + 'This will disable Process blocking.', mtWarning, [mbYes, mbNo], 0) = mrYes then begin
+
+        TrayIcon1.Visible := False;  //Hide TrayIcon before closing the Application to prevent Leftovers
+        CanClose := True;  //Allow Closing
+
+      end
+      else begin
+
+        CanClose := False;  //Allow Closing
+
+      end;
+
+    end
+    else begin
+
+      TrayIcon1.Visible := False;  //Hide TrayIcon before closing the Application to prevent Leftovers
+
+    end;
+
+  end;
 
 end;
 
@@ -790,9 +951,65 @@ begin
 
   TrayIcon1.Show;  //Show Tray Icon
 
-  CHeckBox4.Enabled := NOT IsAdmin;  //Test for Admin Status
+  CheckBox4.Enabled := NOT IsAdmin;  //Test for Admin Status
 
   CheckBox4.Checked := IsAdmin;  //Set Admin Status
+
+  if FileExists(ExtractFilePath(Application.ExeName) + 'Advanced Process Blocker.ini') then begin  //Check if Settings File is Present
+
+    Settings := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'Advanced Process Blocker.ini');
+
+    try
+
+      CheckBox5.Checked := StrToBool(Settings.ReadString('Settings', 'Execute Command', '0'));
+      CheckBox6.Checked := StrToBool(Settings.ReadString('Settings', 'Open URL', '0'));
+      CheckBox7.Checked := StrToBool(Settings.ReadString('Settings', 'Use Password to unblock', '0'));
+      CheckBox9.Checked := StrToBool(Settings.ReadString('Settings', 'Show Message when blocked', '0'));
+      CheckBox8.Checked := StrToBool(Settings.ReadString('Settings', 'Watch for running Process', '0'));
+      CheckBox10.Checked := StrToBool(Settings.ReadString('Settings', 'Start other Executable', '0'));
+      CheckBox1.Checked := StrToBool(Settings.ReadString('Settings', 'Disable Topmost Status', '0'));
+      CheckBox2.Checked := StrToBool(Settings.ReadString('Settings', 'Disable Tray Icon', '0'));
+      CheckBox3.Checked := StrToBool(Settings.ReadString('Settings', 'Prevent Application Termination', '0'));
+      CheckBox14.Checked := StrToBool(Settings.ReadString('Settings', 'Auto Save/Load Settings', '0'));
+      CheckBox13.Checked := StrToBool(Settings.ReadString('Settings', 'Limit CMD to 1 Execution', '0'));
+      CheckBox12.Checked := StrToBool(Settings.ReadString('Settings', 'Limit URL to 1 Execution', '0'));
+      CheckBox11.Checked := StrToBool(Settings.ReadString('Settings', 'Display Message when Blocking', '0'));
+
+      Edit5.Text := Settings.ReadString('Settings', 'Command Line', '');
+      Edit1.Text := Settings.ReadString('Settings', 'URL', '');
+      Edit6.Text := Settings.ReadString('Settings', 'Password', '');
+      Edit2.Text := Settings.ReadString('Settings', 'Running Process', '');
+      Edit3.Text := Settings.ReadString('Settings', 'Title', '');
+      Edit4.Text := Settings.ReadString('Settings', 'Message', '');
+      ExternalExecutable := Settings.ReadString('Settings', 'Other Executable', '');
+      Memo1.Text := StringReplace(Settings.ReadString('Settings', 'Blocklist', ''), '?', #13#10, [rfReplaceAll]);
+
+      SpinEdit1.Value := StrToInt(Settings.ReadString('Settings', 'Tries', '0'));
+      Label7.Caption := 'Current Executable: ' + ExtractFileName(ExternalExecutable);  //Set Label caption as Information
+
+      if StrToBool(Settings.ReadString('Settings', 'Set Administrative Privileges', '0')) = True then Timer4.Enabled := True;
+
+    finally
+
+      Settings.Free //Free Settings File
+
+    end;
+
+  end;
+
+end;
+
+procedure TForm1.Image2Click(Sender: TObject);  //Github Icon Click
+begin
+
+  OpenUrl('https://github.com/EthernalStar/Advanced-Process-Blocker');  //Visit Github Repo Page
+
+end;
+
+procedure TForm1.Image3Click(Sender: TObject);  //Codeberg Icon Click
+begin
+
+    OpenUrl('https://codeberg.org/EthernalStar/Advanced-Process-Blocker');  //Visit Codeberg Repo Page
 
 end;
 
@@ -800,6 +1017,16 @@ procedure TForm1.Label1Click(Sender: TObject);
 begin
 
   ClipBrd.Clipboard.AsText := Label1.Caption;  //Copy PID Value to Clipboard
+  Label1.Font.Color := $0000CE00; //Set Label Color to Green
+  Label1.Caption := 'Copied!';  //Display Message indicating a successful Copy
+  Timer3.Enabled := True;  //Revert Changes with timer
+
+end;
+
+procedure TForm1.Label3Click(Sender: TObject);  //Mail Label Click
+begin
+
+  OpenUrl('mailto:NZSoft@Protonmail.com');  //Open Email with mailto
 
 end;
 
@@ -864,6 +1091,23 @@ begin
     end;
 
   end;
+
+end;
+
+procedure TForm1.Timer3Timer(Sender: TObject);  //Label Copy Status Reset
+begin
+
+  Label1.Font.Color := clblack;  //Reset Label Color
+  Label1.Caption := IntToStr(MasterPID);  //Show Master PID Value again
+  Timer3.Enabled := False;  //Disable Timer
+
+end;
+
+procedure TForm1.Timer4Timer(Sender: TObject);  //External Logic to Restart App as Admin if initiated through Settings
+begin
+
+  CheckBox4.Checked := True;  //Set Checkbox
+  Timer4.Enabled := False;  //Disable Timer
 
 end;
 

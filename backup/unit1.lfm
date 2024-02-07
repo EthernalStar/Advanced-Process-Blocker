@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 71
+  Left = 555
   Height = 625
-  Top = 231
+  Top = 188
   Width = 500
   VertScrollBar.Smooth = True
   VertScrollBar.Tracking = True
@@ -153,7 +153,6 @@ object Form1: TForm1
     0000
   }
   OnActivate = Button1Click
-  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -161,10 +160,11 @@ object Form1: TForm1
   LCLVersion = '2.2.6.0'
   object Button1: TButton
     Left = 0
-    Height = 25
+    Height = 24
     Hint = 'Refreshes the Process List to display Changes'
-    Top = 300
-    Width = 500
+    Top = 301
+    Width = 352
+    Align = alLeft
     Caption = 'Refresh Process List'
     OnClick = Button1Click
     TabOrder = 0
@@ -174,9 +174,10 @@ object Form1: TForm1
     Height = 300
     Top = 325
     Width = 500
+    Align = alBottom
     ColCount = 2
     FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goSmoothScroll]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goThumbTracking, goSmoothScroll]
     RowCount = 2
     ScrollBars = ssBoth
     TabOrder = 1
@@ -199,19 +200,20 @@ object Form1: TForm1
     Left = 0
     Height = 301
     Top = 0
-    Width = 501
+    Width = 500
     ActivePage = TabSheet1
+    Align = alTop
     TabIndex = 0
     TabOrder = 2
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
       Caption = 'Options'
       ClientHeight = 273
-      ClientWidth = 493
+      ClientWidth = 492
       object GroupBox1: TGroupBox
         Left = 10
         Height = 158
-        Top = 10
+        Top = 8
         Width = 230
         Caption = 'Process Termination'
         ClientHeight = 138
@@ -258,7 +260,7 @@ object Form1: TForm1
       object GroupBox3: TGroupBox
         Left = 256
         Height = 254
-        Top = 10
+        Top = 8
         Width = 222
         Caption = 'Process Blocking'
         ClientHeight = 234
@@ -304,7 +306,7 @@ object Form1: TForm1
       object GroupBox5: TGroupBox
         Left = 10
         Height = 88
-        Top = 176
+        Top = 174
         Width = 230
         Caption = 'Other Options'
         ClientHeight = 68
@@ -333,7 +335,7 @@ object Form1: TForm1
     object TabSheet2: TTabSheet
       Caption = 'Events'
       ClientHeight = 273
-      ClientWidth = 493
+      ClientWidth = 492
       object GroupBox6: TGroupBox
         Left = 8
         Height = 80
@@ -568,8 +570,8 @@ object Form1: TForm1
         Left = 180
         Height = 19
         Top = 6
-        Width = 58
-        Caption = 'On/Off'
+        Width = 55
+        Caption = 'Enable'
         OnChange = CheckBox5Change
         TabOrder = 6
       end
@@ -577,8 +579,8 @@ object Form1: TForm1
         Left = 421
         Height = 19
         Top = 6
-        Width = 58
-        Caption = 'On/Off'
+        Width = 55
+        Caption = 'Enable'
         OnChange = CheckBox6Change
         TabOrder = 7
       end
@@ -586,8 +588,8 @@ object Form1: TForm1
         Left = 180
         Height = 19
         Top = 94
-        Width = 58
-        Caption = 'On/Off'
+        Width = 55
+        Caption = 'Enable'
         OnChange = CheckBox7Change
         TabOrder = 8
       end
@@ -595,8 +597,8 @@ object Form1: TForm1
         Left = 421
         Height = 19
         Top = 94
-        Width = 58
-        Caption = 'On/Off'
+        Width = 55
+        Caption = 'Enable'
         OnChange = CheckBox8Change
         TabOrder = 9
       end
@@ -604,8 +606,8 @@ object Form1: TForm1
         Left = 180
         Height = 19
         Top = 182
-        Width = 58
-        Caption = 'On/Off'
+        Width = 55
+        Caption = 'Enable'
         OnChange = CheckBox9Change
         TabOrder = 10
       end
@@ -613,8 +615,8 @@ object Form1: TForm1
         Left = 421
         Height = 19
         Top = 182
-        Width = 58
-        Caption = 'On/Off'
+        Width = 55
+        Caption = 'Enable'
         OnChange = CheckBox10Change
         TabOrder = 11
       end
@@ -622,20 +624,20 @@ object Form1: TForm1
     object TabSheet3: TTabSheet
       Caption = 'Info'
       ClientHeight = 273
-      ClientWidth = 493
-      object GroupBox2: TGroupBox
-        Left = 10
-        Height = 94
-        Top = 10
-        Width = 235
-        Caption = 'Software'
-        ClientHeight = 74
-        ClientWidth = 231
+      ClientWidth = 492
+      object GroupBox4: TGroupBox
+        Left = 249
+        Height = 257
+        Top = 8
+        Width = 232
+        Caption = 'About'
+        ClientHeight = 237
+        ClientWidth = 228
         TabOrder = 0
         object Image1: TImage
-          Left = 10
+          Left = 6
           Height = 64
-          Top = 4
+          Top = 8
           Width = 64
           Picture.Data = {
             1754506F727461626C654E6574776F726B477261706869633B01000089504E47
@@ -653,37 +655,163 @@ object Form1: TForm1
           Stretch = True
         end
         object Label2: TLabel
-          Left = 80
-          Height = 60
-          Top = 6
-          Width = 138
-          Caption = 'Advanced Process Blocker'#13#10'Version 1.00'#13#10'© EthernalStar'#13#10'NZSoft@Protonmail.com'
-          ParentColor = False
-        end
-      end
-      object GroupBox4: TGroupBox
-        Left = 264
-        Height = 223
-        Top = 10
-        Width = 216
-        Caption = 'Information'
-        ClientHeight = 203
-        ClientWidth = 212
-        TabOrder = 1
-        object Label3: TLabel
-          Left = 8
-          Height = 180
+          Left = 76
+          Height = 45
           Top = 8
-          Width = 198
-          Caption = 'Here is my recreation of a private'#13#10'Software Project named Advanced'#13#10'Exe Blocker. Originally this was a Tool'#13#10'to block different running processes'#13#10'by their Name. With this remake I'#13#10'polished up the Source Code to make'#13#10'the Tool publishable.'#13#10#13#10'Potential Use Cases:'#13#10'# Terminte a Process by PID'#13#10'# Block Processes by Name'#13#10'# Redirect Processes to URLs'
+          Width = 146
+          Caption = 'Advanced Process Blocker'#13#10'Version 1.0.1'#13#10'©EthernalStar'
+          Font.CharSet = ANSI_CHARSET
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          Font.Style = [fsBold]
           ParentColor = False
+          ParentFont = False
+        end
+        object Label3: TLabel
+          Cursor = crHandPoint
+          Left = 76
+          Height = 17
+          Hint = 'Write me an E-Mail with Questions or Feedback.'
+          Top = 55
+          Width = 143
+          Caption = 'NZSoft@Protonmail.com'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlue
+          Font.Height = -13
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          ParentColor = False
+          ParentFont = False
+          OnClick = Label3Click
+          OnMouseEnter = CustomLabelMouseEnter
+          OnMouseLeave = CustomLabelMouseLeave
+        end
+        object Button3: TButton
+          Left = 6
+          Height = 25
+          Top = 81
+          Width = 216
+          Caption = 'See latest Changelog'
+          OnClick = Button3Click
+          TabOrder = 0
+        end
+        object Button4: TButton
+          Left = 6
+          Height = 25
+          Top = 112
+          Width = 216
+          Caption = 'See License Information'
+          OnClick = Button4Click
+          TabOrder = 1
+        end
+        object Image2: TImage
+          Cursor = crHandPoint
+          Left = 32
+          Height = 64
+          Hint = 'Visit https://github.com/EthernalStar/Advanced-Process-Blocker'
+          Top = 167
+          Width = 64
+          OnClick = Image2Click
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B47726170686963C202000089504E47
+            0D0A1A0A0000000D49484452000000400000004008030000009DB781EC000000
+            017352474200AECE1CE90000000467414D410000B18F0BFC61050000004E504C
+            5445FFFFFF686C7024292F31373C40434931363C5A5E63848689676B70ACAEB1
+            82868AF1F2F2848889C8C9CBACAFB1E4E4E59EA1A49194974D5256D5D7D8F1F1
+            F2C8CACB76787D91939776787B9EA0A4A6C7BF31000000097048597300000EC3
+            00000EC301C76FA864000001FD494441545847CD97DD42C2300C8561282A8A80
+            08EAFBBFA84DFAD1A559FFB8E3BB2139390DDD56DAB17A64D653628D34CE8691
+            86274A2314860B1BCA3DB017C1D20267156C352A93B734EFC5C0F8697AC65C00
+            4717EC0B280FC00007C52118924169100619280CC3B00472784A7C56D8F2E93B
+            BCA04EAF92BD913876527B27993E244B20A6BE6419BE44AECCF34608BE6CC56D
+            A73D91B95804012980D0006300218020A034C01898D7348280D200A38062A5FB
+            1ADCDC64CA275A1D8C4A5D6A805189CABCB8A6E910A5265885AD17062650F013
+            0B2313C80614F32E988562DE05B320E927B1A0F52EE6AECB53B70F211A7A1C71
+            07E431D8AD3C1A7A9839CBCF815089861E27DC4248899468E8F1855B58A60360
+            16E41EB8090D80593885F4402C44430FCCC2D9E54735F4C02CF87C680A589585
+            F0AD4A1BACCA42189802C6882A7B12256E110DCE1815BD87AE67670EF9D18948
+            7603B508961BA8D93504AA3BB35D32C2053DF695ABDF691428F4B85032500968
+            2A87656D5922E550136665BE49F9068B9841499925A2BC5C6C40256234C23B1B
+            D80E5709FC9BB9DD7A2314126535E19FE0D289836C816F5038C37EB4507B9376
+            0D64275AF04B3166EE2BF2065754C71F65C5ADC5AC4175E3B2AE4683D6198E25
+            E0AED23440A9A08B40700DD22FB6BBE3DC0E9A7283B13F8F6A2D3618D97395B0
+            2F102578597F3856AB7FC5B01102E5A874C80000000049454E44AE426082
+          }
+          Stretch = True
+        end
+        object Image3: TImage
+          Cursor = crHandPoint
+          Left = 128
+          Height = 64
+          Hint = 'Visit https://codeberg.org/EthernalStar/Advanced-Process-Blocker'
+          Top = 167
+          Width = 64
+          OnClick = Image3Click
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B47726170686963E504000089504E47
+            0D0A1A0A0000000D49484452000000400000004008030000009DB781EC000001
+            83694343504943432050726F66696C65000028CF95914B2844511CC67F3343A4
+            91641692C55D60858464C95052D434468DC7C2BD77CC5073EF4CF78E6C2C95AD
+            B2F0D8782D6CACD95AD82AA53C4A965656C446BAFEE78E9A498D72EA747E7DE7
+            7C5FE77C07820759D372AB7AC0B20B4E7C2CAA256766B59A674234D2443721DD
+            74F3C3B1D80415C7C72D01B5DE74A92CFE37EA538BAE09014D78C8CC3B05E105
+            E181D5425EF18E70C45CD253C2A7C29D8E5C50F85EE946915F14677C0EAACC88
+            93888F084784B54C191B656C2E399670BF705BCAB2253F982C724AF19A622BBB
+            62FEDC53BD30BC684F4F295D662B638C33490C0D831596C952A04B565B1497B8
+            EC472BF85B7C7F4C5C86B89631C5314A0E0BDDF7A3FEE077B76EBAAFB798148E
+            42F593E7BDB543CD167C6D7ADEE7A1E77D1D41E8112EEC923F770083EFA26F96
+            B4B67D685887B3CB92666CC3F906343FE47547F7A590CC603A0DAF27F24D33D0
+            740D7573C5DE7EF639BE838474357105BB7BD09191ECF90AEFAE2DEFEDCF337E
+            7F44BF014B4B7297A976854C000000ED504C5445FFFFFF2185D02386D063A8DE
+            EAF3FB62A8DDE0EDF8FEFFFF9AC7EAADD2EEFDFDFFDDECF7F8FCFEF6F9FDF4F9
+            FD479AD8F3F8FDF2F8FCF0F7FCF1F6FBEEF5FAEEF5FCE3EFF8ECF5FAECF4FBEA
+            F3FAEEF5FBE9F3FAE6F1FAE6F2F9E5F0F9E4F0F9E2EEF967ACDFE1EFF9DFEEF7
+            59A3DC6CAFE0DEEDF8DCECF782BAE3D9EBF6DAEAF7D8E8F7D6E8F7D5E8F5D3E7
+            F5E7F2FAD1E5F6C3DFF3F2F8FBCFE4F5CEE4F5CCE3F4CBE2F3C9E2F3C7E1F2C7
+            E0F3C6DEF3C4DDF1C2DDF2C0DDF1C0DDF2BEDBF1318ED23A92D5C4DEF2BEDBF0
+            BBD9EFBBD9F19AC7EBDEECF72285D0D3E7F66BAEDF7CB6E38CBFE7FEFEFFF3F8
+            FBE4BF673E000000097048597300000DD600000DD601906F799C0000020F4944
+            41545847CDD6D94213311480E154D022B8E182A2209BE00EB820521754AC8280
+            EFFF3826277F67B29C9966E88DDF5526E7FCA19798FF582F7489CB5253749169
+            86E311285868C76E03969AB1D78245DD344BADD8D5B031CE65D633CC0B102418
+            162189302A441460508CACC2750784E0B28B2BA4A2CF6527B4822B8599E1A020
+            B6B8505C35B39C1473E4AD3FC0986B1C15BE1ED39BEB37F8C8DD94BCE50199DE
+            9ABFCD674E16C6F4E6CEDD7B7CE71664838F9C4C8DB9FF60918B9C9B3FE49C91
+            DA5A7CB4B4CC55C6CD3966247696961FAFAC72995AB3738E291F3BF32BABEB1B
+            4FB84ED939A7C4A68FC5FAC6D6DC53EE53C63CE394A015367FFEE2258344D30F
+            20F55CFEEAF536A3D88EFE0025FA2EDFDE7DC330A63EF09672C4E5EFDEEF318D
+            A90FD05524DFFBB0CF38A23D4056F3F9C783010B21E501AA90CF3F7DFEC24A20
+            7F802642FEF5F01B4BB5EC81EF349183C10F971FFD1CB255CB1E20890DC82DD6
+            2AE90314A9519EBF903CC07EA6CA87C35FAC7A6BF103FBEC678805BB9E9D7112
+            7E5BF19B58B02CEC8C93E39755B41EEB8E1D71B2FCAA8E1404961D716AEF9B1E
+            9019E763F968D227054DF4809C9B518E84D1497D6C415809A3923E7BE04F509D
+            F67A671C5B1056C2BF5AF003F207EC0B4C0A910518943A22ABD4FFA014A2AB70
+            5D8E6E84DB0E08C165175BA482BB6E681D6E3A22B6B8E88AFAC2BD399FB0E727
+            FCE5E32226FBF3D684B9C6987FC90476B0737625CA0000000049454E44AE4260
+            82
+          }
+          Stretch = True
+        end
+        object Label8: TLabel
+          Left = 4
+          Height = 17
+          Top = 144
+          Width = 218
+          Caption = 'For Updates check the Repos below'
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = -13
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
         end
       end
       object CheckGroup1: TCheckGroup
         Left = 10
-        Height = 129
-        Top = 104
-        Width = 235
+        Height = 193
+        Top = 8
+        Width = 230
         AutoFill = True
         Caption = 'Settings'
         ChildSizing.LeftRightSpacing = 6
@@ -694,82 +822,82 @@ object Form1: TForm1
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 109
-        ClientWidth = 231
-        TabOrder = 2
+        ClientHeight = 173
+        ClientWidth = 226
+        TabOrder = 1
         object CheckBox1: TCheckBox
           Left = 6
-          Height = 18
+          Height = 33
           Top = 6
-          Width = 219
+          Width = 214
           Caption = 'Disable Topmost Status'
           OnChange = CheckBox1Change
           TabOrder = 0
         end
         object CheckBox2: TCheckBox
           Left = 6
-          Height = 18
-          Top = 24
-          Width = 219
+          Height = 33
+          Top = 39
+          Width = 214
           Caption = 'Disable Tray Icon'
           OnChange = CheckBox2Change
           TabOrder = 1
         end
         object CheckBox3: TCheckBox
           Left = 6
-          Height = 18
-          Top = 42
-          Width = 219
+          Height = 33
+          Top = 72
+          Width = 214
           Caption = 'Prevent Application Termination'
           OnChange = CheckBox3Change
           TabOrder = 2
         end
         object CheckBox4: TCheckBox
           Left = 6
-          Height = 18
-          Top = 60
-          Width = 219
+          Height = 33
+          Top = 105
+          Width = 214
           Caption = 'Set Administrative Privileges'
           OnChange = CheckBox4Change
           TabOrder = 3
         end
-        object Button5: TButton
+        object CheckBox14: TCheckBox
           Left = 6
-          Height = 25
-          Top = 78
-          Width = 219
-          Caption = 'Hide Window and Tray Icon'
-          OnClick = Button5Click
+          Height = 29
+          Top = 138
+          Width = 214
+          Caption = 'Auto Save/Load Settings'
+          OnChange = CheckBox14Change
           TabOrder = 4
         end
       end
-      object Button3: TButton
+      object Button5: TButton
+        Left = 10
+        Height = 25
+        Top = 208
+        Width = 230
+        Caption = 'Hide Window and Tray Icon'
+        OnClick = Button5Click
+        TabOrder = 2
+      end
+      object Button17: TButton
         Left = 10
         Height = 25
         Top = 240
-        Width = 235
-        Caption = 'See latest Changelog'
-        OnClick = Button3Click
+        Width = 230
+        Caption = 'Export Process List as CSV File'
+        OnClick = Button17Click
         TabOrder = 3
-      end
-      object Button4: TButton
-        Left = 264
-        Height = 25
-        Top = 240
-        Width = 216
-        Caption = 'See License Information'
-        OnClick = Button4Click
-        TabOrder = 4
       end
     end
   end
   object Label1: TLabel
-    Left = 448
+    Left = 484
     Height = 21
     Top = 0
-    Width = 45
+    Width = 9
     Alignment = taRightJustify
-    Caption = '00000'
+    Caption = '0'
     Font.CharSet = ANSI_CHARSET
     Font.Height = -16
     Font.Pitch = fpVariable
@@ -806,6 +934,17 @@ object Form1: TForm1
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
+  end
+  object Edit7: TEdit
+    Left = 352
+    Height = 24
+    Top = 301
+    Width = 148
+    Align = alRight
+    Alignment = taCenter
+    OnChange = Edit7Change
+    TabOrder = 3
+    TextHint = 'Search in Process List'
   end
   object TrayIcon1: TTrayIcon
     BalloonHint = 'Advanced Process Blocker'
@@ -953,7 +1092,7 @@ object Form1: TForm1
   end
   object Timer1: TTimer
     Enabled = False
-    Interval = 1500
+    Interval = 500
     OnTimer = Timer1Timer
     Left = 32
     Top = 592
@@ -971,5 +1110,26 @@ object Form1: TForm1
     Filter = 'Windows Executable|*.exe|Any File|*.*'
     Left = 120
     Top = 584
+  end
+  object Timer3: TTimer
+    Enabled = False
+    Interval = 250
+    OnTimer = Timer3Timer
+    Left = 160
+    Top = 597
+  end
+  object SaveDialog1: TSaveDialog
+    Title = 'Export List as CSV.'
+    DefaultExt = '.csv'
+    Filter = 'CSV Files|*.csv'
+    Left = 200
+    Top = 592
+  end
+  object Timer4: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = Timer4Timer
+    Left = 143
+    Top = 399
   end
 end
