@@ -33,8 +33,11 @@ You will see visual feedback at the top of the Window if the Process Termination
 In the Panel for Process Blocking you will find diffrerent options to do just this.
 * **Add Selected Entry** simply copies the current Executable Filename to a new Line in the Edit Field. You could also simply write the names in the Field. This Feature is currently only for Executable Names and not PIDs.
 * **Clear All** clears the Edit Field and **Enable Blocking** Toggles the Blocking of the Processes on and off.
-While **Enable Blocking** is active you'll always be asked for confirmation before closing the Application (As of v1.0.1).  
-You can also search for the **Name** or **PID** of a Process using the **Search in Process List** Field (As of v1.0.1).  
+
+While **Enable Blocking** is active you'll always be asked for confirmation before closing the Application (As of v1.0.1).
+
+You can also search for the **Name** or **PID** of a Process using the **Search in Process List** Field (As of v1.0.1).
+
 Each time an Application was blocked the Counter on the Top of the Window will increase.
 
 Other Options include the Feature to **Reset the Blocking Counter** or to **Disable taskkill Sanitizing** wich is explained when using this Feature.
