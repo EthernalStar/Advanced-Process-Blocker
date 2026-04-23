@@ -1,6 +1,6 @@
 # ![Logo](./Icon.png?raw=true) Advanced Process Blocker
 
-## New contact E-Mail: StarStormSigma@protonmail.com
+## New contact E-Mail: StarstormSigma@protonmail.com
 
 **Advanced Process Blocker** is a Tool for terminating and blocking Processes by their PID or Name.
 
@@ -74,7 +74,7 @@ The Info Tab hold some self Settings for the Application itself:
 * The Button "**See License Information**" just shows the License of this Project.
 
 There are also links to my Repositories on [Github](https://github.com/EthernalStar) or [Codeberg](https://codeberg.org/EthernalStar) where you could always find the latest Version.
-If you have questions please don't hesitate to contact me over [E-Mail](mailto:StarStormSigma@protonmail.com) or create an Issue on the Project Page.
+If you have questions please don't hesitate to contact me over [E-Mail](mailto:StarstormSigma@protonmail.com) or create an Issue on the Project Page.
 
 ## Use Cases
 
